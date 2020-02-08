@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:th="http://www.thymeleaf.org"
+       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge" />
+    <title>用户管理</title>
+    <meta name="_csrf" content="111" />
+    <meta name="_csrf_header" content="111" />
+</head>
+<body>
+
+<div class="well">
+    <h1>用户管理</h1>
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <label><input id="name" name="name" class="form-control" placeholder="账号" /></label>
+            <div class="btn-group">
+                <a class="btn btn-info" href="javascript:void(0)" onclick="dosearch();"><i class="fa fa-search"></i> 查 询</a>
+                <a class="btn btn-secondary" href="javascript:void(0)" onclick="doreset();"><i class="fa fa-refresh"></i> 清 除</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row padding-10">
+        <table id="dt_basic" class="table table-responsive table-hover" width="100%">
+            <thead>
+            <th class="smart-form" style="padding:5px;">
+                <label class="checkbox">
+                    <input name="check-all" type="checkbox" />
+                    <i> </i>
+                </label>
+            </th>
+            <th>微信用户ID</th>
+            <th>会话秘钥</th>
+            <th>手机号</th>
+            <th>国家代号</th>
+            <th>邮箱</th>
+            <th>创建时间</th>
+            <th>更新时间</th>
+            <th>操作</th>
+            </thead>
+        </table>
+    </div>
+
+</div>
+
+<!-- Dynamic Modal -->
+<div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:50%;">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<!-- /.modal -->
+<script th:inline="javascript">
+    pageSetUp();
+
+    var pagefunction = function () {
+
+        var csrfToken = $("meta[name='_csrf']").attr("content");
+        var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+
+        var table = $('#dt_basic');
+        var ajax = {
+            url: "/account/index",
+            "type": "POST",
+            data: function (d) {
+                for (var i = 0; i < d.columns.length; i++) {
+                    column = d.columns[i];
+                    column.searchRegex = column.search.regex;
+                    column.searchValue = column.search.value;
+                    delete(column.search);
+                }
+            },
+            beforeSend: function (request) {
+                if (csrfToken && csrfHeader) {
+                    request.setRequestHeader(csrfHeader, csrfToken); // 添加 CSRF Token
+                }
+            }
+        };
+        var columns = [
+            CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
+            { "data": "openId" },
+            { "data": "sessionKey" },
+            { "data": "phone" },
+            { "data": "countryCode" },
+            { "data": "email"},
+            { "data": "dateCreated", render: renderLocalDatetime },
+            { "data": "lastUpdated", render: renderLocalDatetime },
+            {
+                "data": "id",
+                "sClass": "text-center",
+                width: "140px",
+                render: renderAction,
+                sortable: false
+            }
+        ];
+
+        var dt = dt_server_create(table, ajax, columns, true, 6, 'desc');
+
+        $('#delete').on('click', function () {
+            check_batch_delete('/account/delete', table, csrfToken, csrfHeader);
+        });
+
+        function renderAction(cellValue, options, rowObject) {
+            html = '<div class="btn-group">';
+            html += '<a href="/account/edit/' + cellValue +
+                '" class="btn-warning btn btn-xs" data-toggle="modal" data-target="#remoteModal"><i class="fa fa-edit"></i> <span class="hidden-mobile">修 改</span></a>';
+            html += '</div>';
+            return html;
+        }
+
+    };
+
+    function dosearch() {
+        $('#dt_basic').DataTable().ajax.reload();
+    }
+
+    function doreset() {
+        $("#name").val("");
+        $('#dt_basic').DataTable().ajax.reload();
+    }
+
+    loadScript("js/plugin/datatables/jquery.dataTables.min.js", function () {
+        loadScript("js/plugin/datatables/dataTables.colVis.min.js", function () {
+            loadScript("js/plugin/datatables/dataTables.tableTools.min.js", function () {
+                loadScript("js/plugin/datatables/dataTables.bootstrap.min.js", function () {
+                    loadScript("js/plugin/datatable-responsive/datatables.responsive.min.js", pagefunction)
+                });
+            });
+        });
+    });
+</script>
+</body>
+</html>

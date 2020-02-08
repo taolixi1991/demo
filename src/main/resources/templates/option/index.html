@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge" />
+    <title>小程序选项字典</title>
+    <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/plugin/jstree/style.css}" />
+    <meta name="_csrf" content="111" />
+    <meta name="_csrf_header" content="111" />
+</head>
+
+<body>
+
+<!-- Bread crumb is created dynamically -->
+<!-- row -->
+<div class="row">
+
+    <!-- col -->
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+
+            <!-- PAGE HEADER -->
+            <i class="fa-fw fa fa-table"></i>
+            小程序选项字典
+        </h1>
+    </div>
+    <!-- end col -->
+
+</div>
+<!-- end row -->
+
+<!-- widget grid -->
+
+
+<section id="widget-grid" class="">
+
+    <!-- row -->
+    <div class="row">
+
+        <article class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+            <div class="jarviswidget jarviswidget-color-orange" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                        <span class="widget-icon">
+                            <i class="fa fa-sitemap"></i>
+                        </span>
+                    <h2>
+                        <strong>选项一</strong>
+                    </h2>
+                    <div class="widget-toolbar">
+                        <a class="btn btn-primary" onclick="create();" href="javascript:void(0);">
+                            <i class="fa fa-edit"> </i>
+                            <span class="hidden-mobile">新 增</span>
+                        </a>
+                    </div>
+                    <input type="hidden" id="pid" value="undefined">
+                </header>
+                <div>
+                    <!-- widget content -->
+                    <div class="widget-body">
+                        <div id="jstree"></div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- WIDGET END -->
+
+
+            <article class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                <div class="jarviswidget jarviswidget-color-orange" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false"
+                     data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                    <header>
+                        <span class="widget-icon">
+                            <i class="fa fa-sitemap"></i>
+                        </span>
+                        <h2>
+                            <strong>选项二</strong>
+                        </h2>
+                        <div class="widget-toolbar">
+                            <a class="btn btn-primary" onclick="create2();" href="javascript:void(0);">
+                                <i class="fa fa-edit"> </i>
+                                <span class="hidden-mobile">新 增</span>
+                            </a>
+                        </div>
+<!--                        <input type="hidden" id="pid" value="undefined">-->
+                    </header>
+                    <div>
+                        <!-- widget content -->
+                        <div class="widget-body">
+                            <div id="jstree2"></div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- WIDGET END -->
+
+    </div>
+
+    <!-- end row -->
+
+</section>
+<!-- end widget grid -->
+
+<!-- Dynamic Modal -->
+<div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<!-- /.modal -->
+
+<script type="text/javascript">
+    pageSetUp();
+
+    var csrfToken = $("meta[name='_csrf']").attr("content");
+    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+
+    function run_jstree_function() {
+
+        jQuery('#jstree').jstree({
+            'core': {
+                'data': {
+                    'url': "/option/tree",
+                    'data': function (node) {
+                        return {
+                            "pid": node.id
+                        };
+                    }
+                },
+                'check_callback': true
+            },
+            'plugins': ['contextmenu'],
+            'contextmenu': {
+                'items': {
+                    'create': {
+                        'label': '新建',
+                        'action': function (data) {
+                            var inst = jQuery.jstree.reference(data.reference),
+                                obj = inst.get_node(data.reference);
+                            $('#remoteModal').modal({
+                                remote: '/option/create/'+ obj.id+"?type=project"
+                            });
+                        }
+                    },
+                    'rename': {
+                        'label': '修改',
+                        'action': function (data) {
+                            var inst = jQuery.jstree.reference(data.reference),
+                                obj = inst.get_node(data.reference);
+                            $('#remoteModal').modal({
+                                remote: '/option/edit/' + obj.id
+                            });
+                        }
+                    },
+                    'remove': {
+                        'label': '删除',
+                        'action': function (data) {
+                            var inst = jQuery.jstree.reference(data.reference),
+                                obj = inst.get_node(data.reference);
+                            del(obj.id);
+                        }
+                    },
+                    'ccp': null
+                }
+            }
+        });
+
+
+
+        jQuery('#jstree2').jstree({
+            'core': {
+                'data': {
+                    'url': "/option/tree2",
+                    'data': function (node) {
+                        return {
+                            "pid": ""
+                        };
+                    }
+                },
+                'check_callback': true
+            },
+            'plugins': ['contextmenu'],
+            'contextmenu': {
+                'items': {
+                    'create': {
+                        'label': '新建',
+                        'action': function (data) {
+                            var inst = jQuery.jstree.reference(data.reference),
+                                obj = inst.get_node(data.reference);
+                            $('#remoteModal').modal({
+                                remote: '/option/create/undefined?type=storeType'
+                            });
+                        }
+                    },
+                    'rename': {
+                        'label': '修改',
+                        'action': function (data) {
+                            var inst = jQuery.jstree.reference(data.reference),
+                                obj = inst.get_node(data.reference);
+                            $('#remoteModal').modal({
+                                remote: '/option/edit/' + obj.id
+                            });
+                        }
+                    },
+                    'remove': {
+                        'label': '删除',
+                        'action': function (data) {
+                            var inst = jQuery.jstree.reference(data.reference),
+                                obj = inst.get_node(data.reference);
+                            del(obj.id);
+                        }
+                    },
+                    'ccp': null
+                }
+            }
+        });
+
+
+
+        function del(id) {
+            $.SmartMessageBox({
+                    title: "注 意!",
+                    content: "确定要删除选定的数据项吗？",
+                    buttons: '[取 消][确 定]'
+                },
+                function (ButtonPressed) {
+                    if (ButtonPressed === "确 定") {
+                        $.ajax({
+                            url: '/option/delete',
+                            type: 'POST',
+                            data: {
+                                id: id.toString()
+                            },
+                            beforeSend: function (request) {
+                                if (csrfToken && csrfHeader) {
+                                    request.setRequestHeader(csrfHeader, csrfToken); // 添加 CSRF Token
+                                }
+                            },
+                            success: function () {
+
+                                jQuery('#jstree').jstree(true).refresh();
+                                jQuery('#jstree2').jstree(true).refresh();
+                            },
+                            error: function (e) {
+                                error_alert("该错误已被记录，请联系管理员，并稍后重试！");
+                                e.preventDefault();
+                            }
+                        });
+                    }
+                });
+        }
+
+    }
+
+    loadScript('js/plugin/jstree/jstree.min.js', run_jstree_function);
+
+    var pagefunction = function () {
+
+    };
+
+    loadScript("js/plugin/datatables/jquery.dataTables.min.js", function () {
+        loadScript("js/plugin/datatables/dataTables.colVis.min.js", function () {
+            loadScript("js/plugin/datatables/dataTables.tableTools.min.js", function () {
+                loadScript("js/plugin/datatables/dataTables.bootstrap.min.js", function () {
+                    loadScript(
+                        "js/plugin/datatable-responsive/datatables.responsive.min.js",
+                        pagefunction)
+                });
+            });
+        });
+    });
+
+    function create() {
+        var id = $('#pid').val();
+        $('#remoteModal').modal({
+            remote: '/option/create/' + id+"?type=project"
+        });
+    };
+
+    function create2() {
+        var id="undefined"
+        $('#remoteModal').modal({
+            remote: '/option/create/' + id+"?type=storeType"
+        });
+    };
+
+
+    jQuery('#jstree').on("changed.jstree", function (e, data) {
+        var id = data.node.id;
+        $('#pid').val(id);
+    });
+</script>
+
+</body>
+
+</html>

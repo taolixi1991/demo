@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:th="http://www.thymeleaf.org"
+       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title>新增字典项</title>
+</head>
+<body>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 新增字典项</h4>
+</div>
+
+<div class="modal-body no-padding">
+    <form id="form" class="smart-form" novalidate="novalidate">
+        <input type="hidden" id="parentId" name="parentId" th:value="${dict.parentId}">
+        <fieldset>
+            <section>
+                <label class="input">
+                    <input type="text" name="mask" id="mask" placeholder="字典标识" th:value="${dict.mask}" />
+                </label>
+            </section>
+            <section>
+                <label class="input">
+                    <input type="text" name="name" id="name" placeholder="字典项名称" th:value="${dict.name}" />
+                </label>
+            </section>
+            <section>
+                <label class="input">
+                    <input type="text" name="value" id="value" placeholder="字典值" th:value="${dict.value}" />
+                </label>
+            </section>
+        </fieldset>
+        <footer>
+            <button type="submit" class="btn btn-primary">
+                保 存
+            </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                取 消
+            </button>
+        </footer>
+    </form>
+</div>
+
+<script>
+    pageSetUp();
+
+    var pagefunction = function () {
+
+        var form = $("#form"), dt = $('#dt_basic'), url = '/system/dict/save';
+
+        var rules = {
+            name: {required: true},
+            mask: {required: true},
+            value: {required: true}
+        };
+        var messages = {
+            name: {required: '请输入字典项名称'},
+            mask: {required: '请输入字典标识'},
+            value: {required: '请输入字典值'}
+        };
+        var success =function(){
+            $('#remoteModal').modal('hide');
+            $('#dt_basic').DataTable().ajax.reload();
+            jQuery('#jstree').jstree(true).refresh(false, true);
+        };
+        var $form = form_post(form, rules, messages, url, success);
+    };
+
+    loadScript('js/plugin/jquery-form/jquery-form.min.js', pagefunction);
+</script>
+</body>
+</html>

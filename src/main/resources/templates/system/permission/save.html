@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>权限管理-保存</title>
+
+</head>
+
+<body>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 表信息</h4>
+</div>
+
+<div class="modal-body no-padding">
+    <form class="smart-form" id="form">
+        <fieldset>
+
+            <section>
+                <label class="label">权限名称：</label>
+                <label class="input">
+                    <input type="text" id="name" name="name" th:value="${permission.name}" />
+                    <input type="hidden" id="type" name="type" th:value="${permission.type}" />
+                </label>
+            </section>
+
+            <section>
+                <label class="label">权限标识：</label>
+                <label class="input">
+                    <input type="text" id="mask" name="mask" th:value="${permission.mask}" />
+                </label>
+            </section>
+
+            <section>
+                <label class="label">URL：</label>
+                <label class="input">
+                    <input type="text" id="url" name="url" th:value="${permission.url}" />
+                </label>
+            </section>
+
+            <section>
+                <label class="label">CSS：</label>
+                <label class="input">
+                    <input type="text" id="css" name="css" th:value="${permission.css}" />
+                </label>
+            </section>
+
+            <section>
+                <label class="label">排序号：</label>
+                <label class="input">
+                    <input type="text" id="seq" name="seq" th:value="${permission.seq}" />
+                </label>
+            </section>
+
+        </fieldset>
+        <footer>
+            <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> 保 存</button>
+            <a class="btn btn-warning" data-dismiss="modal"><i class="fa fa-close"></i> 取 消</a>
+        </footer>
+    </form>
+
+</div>
+
+
+<script th:inline="javascript">
+    pageSetUp();
+
+    var pagefunction = function () {
+        var form = $("#form"),
+            dt = $('#dt_basic'),
+            submitUrl = '/system/permission/save';
+
+        var success =function(){
+            jQuery('#jstree').jstree(true).refresh(false, true);
+            $('#remoteModal').modal('hide');
+            $('#dt_basic').DataTable().ajax.reload();
+        };
+
+        var rules = {
+            name: {
+                required: true
+            }
+
+        };
+        var messages = {
+            name: {
+                required: '权限名称不能为空！'
+            }
+        };
+
+        var $form = form_post(form, rules, messages, submitUrl, success);
+    }
+
+    loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+</script>
+
+</body>
+
+</html>

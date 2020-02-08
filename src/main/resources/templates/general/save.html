@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:javascript="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title>滚动图片信息</title>
+    <script language="javascript" type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/layer/layer.js}"></script>
+    <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/bootstrap-select.min.css}">
+
+</head>
+<body>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 用户信息</h4>
+</div>
+
+<div class="modal-body no-padding">
+    <form id="form-add" enctype="multipart/form-data">
+        <div class="form-group">
+            <label  class="col-sm-3">文件名:</label>
+            <div class="col-sm-8" style="margin-bottom: 15px">
+                <input type="text" class="form-control" id="name" name="name"
+                       placeholder="请输入文件名">
+            </div>
+        </div>
+        <div class="form-group" >
+            <label  class="col-sm-3 control-label">图片：</label>
+            <div class="col-sm-8" style="margin-bottom: 30px">
+                <input  onchange="change(this)"   name="file" accept="image/*" type="file" style="display:none">
+                <div class="input-append">
+                    <input onclick="inputClick(this)"  id="file" class="form-control" type="text" style="height:30px;">
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <a class="btn btn-primary" onclick="shangchuan(this)">上传</a>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        <div class="col-sm-6" style="text-align:center" >
+            <button id="submit" type="button" class="btn btn-info btn-lg">提交</button>
+        </div>
+        <div class="col-sm-6" style="text-align:center">
+            <button type="button" class="btn btn-warning btn-lg save" data-dismiss="modal">取消</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#submit").on("click",function () {
+        var fd = new FormData(document.getElementById("form-add"));
+        $.ajax({
+            cache : true,
+            type : "POST",
+            url : "/general/upload",
+            data : fd,
+            processData:false,
+            contentType:false,
+            async:false,
+            error : function(request) {
+                layer.msg("系统错误!", {time: 3000, icon:2});
+            },
+            success : function(result) {
+                window.location.reload();
+            }
+        });
+    })
+
+    function  inputClick(node) {
+        var $this=$(node)
+        $this.parent().prev().click()
+    }
+
+    //上传
+    function shangchuan(node) {
+        var $this=$(node)
+        $this.parent().prev().children("input:nth-child(1)").click()
+    }
+    function  change(node) {
+        var $this=$(node)
+        if ($this.next().children("input").length==2){
+            var fileName=$this.val();
+            var strFileName=""
+            if (fileName!=null||fileName!='') {
+                strFileName=fileName.replace(/^.+?\\([^\\]+?)(\.[^\.\\]*?)?$/gi,"$1");
+                var index = fileName.lastIndexOf(".");
+                var suffix = fileName.substring(index+1);
+                strFileName=strFileName+"."+suffix
+            }
+            $this.next().children("input:nth-child(2)").val(strFileName)
+            $this.next().children("input:nth-child(1)").remove()
+        }else {
+            var fileName=$this.val();
+            var strFileName=""
+            if (fileName!=null||fileName!='') {
+                strFileName=fileName.replace(/^.+?\\([^\\]+?)(\.[^\.\\]*?)?$/gi,"$1");
+                var index = fileName.lastIndexOf(".");
+                var suffix = fileName.substring(index+1);
+                strFileName=strFileName+"."+suffix
+            }
+            $this.next().children("input:nth-child(1)").attr("attr","yes")
+            $this.next().children("input:nth-child(1)").val(strFileName)
+        }
+    }
+</script>
+
+</body>
+</html>

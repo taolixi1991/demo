@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:th="http://www.thymeleaf.org"
+       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title>后台账号管理-保存</title>
+</head>
+<body>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 用户信息</h4>
+</div>
+
+<div class="modal-body no-padding">
+    <form id="form" class="smart-form" novalidate="novalidate">
+        <fieldset>
+            <section>
+                <label class="input">
+                    <input type="text" name="username" id="username" placeholder="账号" />
+                </label>
+            </section>
+            <section>
+                <label class="input">
+                    <input type="password" name="password" id="password" placeholder="密码" />
+                </label>
+            </section>
+            <section>
+                <label class="input">
+                    <input type="text" name="fullName" id="fullName" placeholder="用户姓名" />
+                </label>
+            </section>
+            <section>
+                <label class="input">
+                    <input type="text" name="mobile" id="mobile" placeholder="手机号" />
+                </label>
+            </section>
+            <section>
+                <label class="input">
+                    <input type="text" name="email" id="email" placeholder="邮箱" />
+                </label>
+            </section>
+        </fieldset>
+        <footer>
+            <button type="submit" class="btn btn-primary">
+                保 存
+            </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                取 消
+            </button>
+        </footer>
+    </form>
+</div>
+
+<script>
+    pageSetUp();
+
+    var pagefunction = function () {
+        var form = $("#form"), dt = $('#dt_basic'), url = '/system/user/save';
+        var rules = {
+            username: {required: true},
+            password: {required: true}
+        };
+        var messages = {
+            username: {required: '请输入账号'},
+            password: {required: '请输入密码'}
+        };
+        var success =function(){
+            $('#remoteModal').modal('hide');
+            $('#dt_basic').DataTable().ajax.reload();
+        };
+        var $form = form_post(form, rules, messages, url, success);
+    };
+
+    loadScript('js/plugin/jquery-form/jquery-form.min.js', pagefunction);
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>后台账号管理-指定角色</title>
+
+</head>
+
+<body>
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel">
+        <i class="fa fa-edit"></i> 用户角色</h4>
+</div>
+
+<div class="modal-body no-padding">
+    <form class="smart-form" id="form">
+        <fieldset>
+
+            <section>
+                <div class="row">
+                    <label class="label col col-2">账号：</label>
+                    <div class="col col-10">
+                        <label class="input">
+                            <input type="text" id="username" name="username" th:value="${user.username}" disabled="disabled" />
+                            <input name="userId" type="hidden" th:value="${user.id}" />
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="row">
+                    <label class="label col col-2">角色：</label>
+                    <div class="col col-10">
+                        <div class="inline-group">
+                            <label th:each="role:${roles}" class="checkbox">
+                                <input th:id="${role.id}" name="role" th:value="${role.id}" type="checkbox"
+                                       th:checked="${role.hasRole}" /><i></i>
+                                [[${role.name}]]
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </fieldset>
+
+        <footer>
+            <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> 保 存</button>
+            <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> 取 消</a>
+
+        </footer>
+    </form>
+</div>
+
+
+<script th:inline="javascript">
+    pageSetUp();
+
+    var pagefunction = function () {
+        var form = $("#form"),
+            submitUrl = '/system/user/assign';
+
+        var success = function () {
+            $('#remoteModal').modal('hide');
+            $('#dt_basic').DataTable().ajax.reload();
+        };
+
+        var rules = {};
+        var messages = {};
+
+        var $form = form_post(form, rules, messages, submitUrl, success);
+    }
+
+    loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+</script>
+
+
+</body>
+
+</html>

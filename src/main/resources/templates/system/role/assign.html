@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title></title>
+
+</head>
+
+<body>
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel">
+        <i class="fa fa-edit"></i> 角色权限</h4>
+</div>
+
+<div class="modal-body no-padding">
+    <form class="smart-form" id="form">
+        <fieldset>
+
+            <section>
+                <label class="label">角色名称：</label>
+                <label class="input">
+                    <input type="text" id="name" name="name" th:value="${role.name}" disabled="disabled" />
+                    <input name="roleId" type="hidden" th:value="${role.id}" />
+                </label>
+            </section>
+
+            <section>
+                <label class="label">角色标识：</label>
+                <label class="input">
+                    <input type="text" id="mask" name="mask" th:value="${role.mask}" disabled="disabled" />
+                </label>
+            </section>
+
+            <section th:each="permission:${permissions}">
+
+                <div class="inline-group">
+                    <label class="checkbox">
+                        <input th:id="${permission.id}" name="permission" type="checkbox" th:value="${permission.id}"
+                               th:checked="${permission.hasPermission}" /><i></i>
+                        [[${permission.name}]]
+                    </label>
+
+                    <label class="checkbox" th:each="child: ${permission.children}">
+                        <input th:id="${child.id}" name="permission" type="checkbox" th:value="${child.id}"
+                               th:checked="${child.hasPermission}" /><i></i>
+                        [[${child.name}]]
+                    </label>
+                </div>
+
+            </section>
+
+        </fieldset>
+        <footer>
+            <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> 保 存</button>
+            <a class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> 取 消</a>
+
+        </footer>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    pageSetUp();
+
+    var pagefunction = function () {
+        var form = $("#form"),
+            submitUrl = '/system/role/assign';
+
+        var success = function () {
+            $('#remoteModal').modal('hide');
+            $('#dt_basic').DataTable().ajax.reload();
+        };
+
+        var rules = {};
+        var messages = {};
+
+        var $form = form_post(form, rules, messages, submitUrl, success);
+    }
+
+    loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+</script>
+
+</body>
+
+</html>
