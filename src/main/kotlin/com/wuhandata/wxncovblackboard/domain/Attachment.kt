@@ -12,8 +12,5 @@ class Attachment (
         var name: String = "",
         //附件来源
         var source: String = "",
-        var detailId: String = "",
-        //病例文件类型
-        var type: String = "",
         var path: String = ""
 ): BaseDomain()

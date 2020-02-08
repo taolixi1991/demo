@@ -8,7 +8,7 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name = "t_customer_patient")
+@Table(name = "t_case")
 class PatientCase {
     @Id
     @GeneratedValue(generator = "jpa-uuid")
@@ -18,4 +18,5 @@ class PatientCase {
     var openId: String = ""
     var patientId: String = ""
     var detailId: String = ""
+    var diagnosis: String = ""
 }

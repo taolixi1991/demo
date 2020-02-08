@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 
 interface AttachmentRepository: JpaRepository<Attachment, String>, JpaSpecificationExecutor<Attachment> {
-
-    @Query("SELECT * FROM `t_attachment` att INNER JOIN t_feedback_attachment fa on att.id = fa.attachment_id WHERE fa.feedback_id = ?1", nativeQuery = true)
-    fun findAllByFeedbackId(feedbackId: String): List<Attachment>
+//
+//    @Query("SELECT * FROM `t_attachment` att INNER JOIN t_feedback_attachment fa on att.id = fa.attachment_id WHERE fa.feedback_id = ?1", nativeQuery = true)
+//    fun findAllByFeedbackId(feedbackId: String): List<Attachment>
 
     fun findAllBySource(source: String): List<Attachment>
 

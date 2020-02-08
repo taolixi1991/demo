@@ -66,15 +66,15 @@ class AttachmentService {
         return attachment
     }
 
-    fun getAttachmentsByDetailId(DetailId: String): List<Attachment> {
-        var list = emptyList<Attachment>()
-        try {
-            list = attachmentRepo.findAllByFeedbackId(DetailId)
-        } catch (e: Exception) {
-            log.error(e.message)
-        }
-        return list
-    }
+//    fun getAttachmentsByDetailId(DetailId: String): List<Attachment> {
+//        var list = emptyList<Attachment>()
+//        try {
+//            list = attachmentRepo.findAllByFeedbackId(DetailId)
+//        } catch (e: Exception) {
+//            log.error(e.message)
+//        }
+//        return list
+//    }
 
     fun getMainPageSliders(): List<String> {
         var list = ArrayList<String>()

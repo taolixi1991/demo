@@ -36,6 +36,7 @@ class PatientCaseService {
                 case.openId = openId
                 case.detailId = detailId
                 case.patientId = patientId
+                case.diagnosis = getDiagnosis()
                 caseRepository.save(case)
             } else {
                 if(StringUtils.isEmpty(patientId)) {
@@ -47,19 +48,6 @@ class PatientCaseService {
             }
         } catch (ex: Exception) {
             log.error(ex.message)
-        }
-        return true
-    }
-
-    fun updatePatientStatus(patientId: String, status: Int, treatmentAddress: String, caseStatus: Int): Boolean {
-        val option = infoRepository.findById(patientId)
-        if(option.isPresent) {
-            val info = option.get();
-            info.status = status
-            info.treatmentAddress = treatmentAddress
-            info.caseStatus = caseStatus
-
-            infoRepository.save(info)
         }
         return true
     }
@@ -85,6 +73,10 @@ class PatientCaseService {
             caseList.add(vo)
         }
         return caseList
+    }
+
+    fun getDiagnosis(): String {
+        return ""
     }
 
 }
